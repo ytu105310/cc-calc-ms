@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: note-app-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: note-app
+  template:
+    metadata:
+      labels:
+        app: note-app
+    spec:
+      containers:
+      - name: note-app
+        image: makaveli17/note-app:latest
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: note-app-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: note-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000

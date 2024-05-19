@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note App</title>
+    <script>
+        async function addNote() {
+            const content = document.getElementById('note-content').value;
+            const response = await fetch('/api/notes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content })
+            });
+            const note = await response.json();
+            document.getElementById('note-content').value = '';
+            loadNotes();
+        }
+
+        async function loadNotes() {
+            const response = await fetch('/api/notes');
+            const notes = await response.json();
+            const notesList = document.getElementById('notes-list');
+            notesList.innerHTML = '';
+            notes.forEach(note => {
+                const listItem = document.createElement('li');
+                listItem.textContent = note.content;
+                notesList.appendChild(listItem);
+            });
+        }
+
+        window.onload = function() {
+            loadNotes();
+        }
+    </script>
+</head>
+<body>
+    <h1>Notes</h1>
+    <textarea id="note-content"></textarea>
+    <button onclick="addNote()">Add Note</button>
+    <ul id="notes-list"></ul>
+</body>
+</html>
